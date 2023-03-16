@@ -1,0 +1,1 @@
+{"learning_rate": 0.05753719135300602, "depth": 10.0, "l2_leaf_reg": 0.0, "model_size_reg": 65.8443982531061, "loss_function": "RMSE", "random_seed": 399.0, "subsample": 0.8123341230204819, "n_estimators": 339.0, "colsample_bylevel": 0.9217246666510086, "min_child_samples": 9.0}
