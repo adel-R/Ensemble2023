@@ -1,0 +1,1 @@
+{"base_estimator": null, "bootstrap": true, "bootstrap_features": false, "max_features": 1.0, "max_samples": 0.5444016362887742, "n_estimators": 640, "n_jobs": null, "oob_score": true, "random_state": 669, "verbose": 0, "warm_start": false}

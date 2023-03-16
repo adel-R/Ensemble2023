@@ -6,6 +6,7 @@ import glob
 import spacy
 import nltk
 import re
+import json as json
 
 # modeling
 import xgboost as xg
@@ -13,9 +14,15 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import AdaBoostRegressor
 from sklearn.ensemble import BaggingRegressor
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import ExtraTreesRegressor
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.ensemble import HistGradientBoostingRegressor
 from lightgbm import LGBMRegressor
+from sklearn.ensemble import VotingRegressor
+from sklearn.ensemble import StackingRegressor
+
+import lightgbm as lgb
+
 
 # Dimension reduction and clustering
 from sklearn.decomposition import PCA
@@ -74,9 +81,12 @@ __all__ = ["sns",
            "AdaBoostRegressor",
            "BaggingRegressor",
            "RandomForestRegressor",
+           "ExtraTreesRegressor",
            "GradientBoostingRegressor",
            "HistGradientBoostingRegressor",
            "LGBMRegressor",
+           "VotingRegressor",
+           "StackingRegressor",
            "PCA",
            "KMeans",
            "TSNE",
@@ -88,8 +98,17 @@ __all__ = ["sns",
            "encode_texts",
            "compare_norm_dist",
            "preprocess",
-           "scores" 
-           ]
+           "scores",
+           "load_params",
+           "file_paths",
+           "json",
+           "lgb"
+          ]
+
+file_paths = {'data':'../dataset/AB_NYC_2019.csv',
+              'name_tsne': '../dataset/name_tsne.csv',
+              'text_tsne': '../dataset/text_tsne.csv',
+              'opendata' : '../dataset/airbnb-listings.csv'}
 
 ############# HELPER FUNCTIONS WE DEVELOPPED #############################
 # - get_cartesian: Converts latitude and longitude arrays into (x,y,z) coordinates
@@ -101,6 +120,7 @@ __all__ = ["sns",
 # - compare_norm_dist : Compares a series normal distribution and return threshold to remove outliers.
 # - preprocess :  Preprocesses raw file to return a feature matrix X (dataframe) and target values y (dataframe)
 # - scores : Compute MAE, MSE, RMSE, R2 and MAPE scores and plot prediction errors
+# - load_params : load json files containing tuned models' parameters
 ##########################################################################
 
 
@@ -249,8 +269,15 @@ def compare_norm_dist(series,plots = True):
     '''
     # mean and standard deviation
     mu, std = norm.fit(series) 
-    upper_boundary=mu + 3* std
-    lower_boundary=mu - 3* std
+    upper_boundary=mu + 2 * std
+    lower_boundary=mu - 2 * std
+    
+    # Q1 = series.quantile(0.25)
+    # Q3 = series.quantile(0.75)
+    # IQR = Q3 - Q1
+    # lower_boundary = Q1 - 1.5 * IQR
+    # upper_boundary = Q3 + 1.5 * IQR
+    
 
     if plots == True:
         # Plot the histogram.
@@ -288,20 +315,31 @@ def compare_norm_dist(series,plots = True):
     
     return upper_boundary,lower_boundary
 
-def preprocess(file_path,test_size=0.2,random_state=100):
+def preprocess(file_path,test_size=0.12,random_state=100, do_pca=False):
     '''
     Fetches files in a given path and preprocess them to return a feature matrix X (dataframe) and target values y (dataframe)
     Input :
         files: path as string
         final_test_set: a boolean that is used only for the final test set
+        test_size : size of the remaining test set
+        random_state : random_state of the train/test split selection
+        do_pca : If set to true, compute the name encoding and pca embeddings for 20 PC (computationally expensive)
     Outputs : 
         X_train : Train Feature matrix as DataFrame
         y_train : Train Target values as Series
         X_test : Test Feature matrix as DataFrame
         y_test : Test Target values as Series
     '''
-    #Load file
-    df = pd.read_csv(file_path)
+    #Load file    
+    df = pd.read_csv(file_paths['data'])
+    
+    #Import external features from external source : https://public.opendatasoft.com/explore/dataset/airbnb-listings/export/?disjunctive.host_verifications&disjunctive.amenities&disjunctive.features&refine.city=New+York
+    opendata_str = ['Name','Summary','Space', 'Description', 'Experiences Offered', 'Neighborhood Overview','Notes', 'Transit', 'Access', 'Interaction','Amenities','Bed Type']
+    opendata_float = ['Host Response Rate','Accommodates','Bathrooms','Bedrooms','Beds','Square Feet']
+
+    opendata = pd.read_csv(file_paths['opendata'],sep=';',usecols=['ID']+opendata_str+opendata_float)
+    opendata['text'] = opendata[opendata_str].fillna('').sum(axis=1)
+    opendata[opendata_float]= opendata[opendata_float].fillna(-1)
 
     # Remove entries with no price
     df = df[df['price']!=0]
@@ -311,10 +349,16 @@ def preprocess(file_path,test_size=0.2,random_state=100):
     df['number_of_reviews'].fillna(0, inplace=True)
     df['reviews_per_month'].fillna(0, inplace=True)
     df['name'].fillna('Unnamed', inplace=True)
-    df['last_review'].fillna('2099-01-01',inplace=True)
+    df['last_review'].fillna('1900-01-01',inplace=True)
+    
+    # Add external features
+    df = df.merge(opendata[['ID','text']+opendata_float],how='left',left_on='id',right_on='ID')
+    df[opendata_float]= df[opendata_float].fillna(-2)
+    df[['ID','text']]= df[['ID','text']].fillna('Unknown')
 
     # Processing dates
     df['last_review'] = pd.to_datetime(df['last_review'])
+    df['recency_last_review'] = (np.datetime64('today') - df['last_review']) / np.timedelta64(1, 'D')
     df['last_review_day'] = df['last_review'].dt.day
     df['last_review_month'] = df['last_review'].dt.month
     df['last_review_year'] = df['last_review'].dt.year
@@ -333,19 +377,24 @@ def preprocess(file_path,test_size=0.2,random_state=100):
     df['z'] = z
         
     # Encoding of the names of Airbnb postings using one of spaCy's pretrained model
-    encoded_names = encode_texts(df['name'])
+    if do_pca:
+        encoded_names = encode_texts(df['name'])
+
+        # PCA embeddings of the  encoded vectors of the name of Airbnb postings
+        pca = PCA()
+        names_pca = pca.fit_transform(encoded_names)
+        pca_df = pd.DataFrame(names_pca[:,:20],columns=['name_encoding_PC_'+str(i+1) for i in range(20)])
+        pca_df.index = list(df.index)
+        df = pd.concat((df,pca_df),axis=1)
     
-    # PCA embeddings of the  encoded vectors of the name of Airbnb postings
-    pca = PCA()
-    names_pca = pca.fit_transform(encoded_names)
-    pca_df = pd.DataFrame(names_pca[:,:20],columns=['name_encoding_PC_'+str(i+1) for i in range(20)])
-    pca_df.index = list(df.index)
-    df = pd.concat((df,pca_df),axis=1)
+    # TSNE embeddings of the  encoded vectors of the name of Airbnb postings AND of the texts (Description,) from external feature 
+    name_tsne_df = pd.read_csv(file_paths['name_tsne'],names = ['name_encoding_tsne_1','name_encoding_tsne_2'],skiprows=1)
+    name_tsne_df.index = list(df.index)
+    df = pd.concat((df,name_tsne_df),axis=1)
     
-    # TSNE embeddings of the  encoded vectors of the name of Airbnb postings
-    tsne_df = pd.read_csv('dataset/tsne.csv',names = ['name_encoding_tsne_1','name_encoding_tsne_2'],skiprows=1)
-    tsne_df.index = list(df.index)
-    df = pd.concat((df,tsne_df),axis=1)
+    text_tsne_df = pd.read_csv(file_paths['text_tsne'],names = ['text_tsne_id','text_encoding_tsne_1','text_encoding_tsne_2'],skiprows=1)
+    text_tsne_df.index = list(df.index)
+    df = pd.concat((df,text_tsne_df),axis=1)
     
     # We trim out the outliers using the log log price distribution
     df['log_log_price'] = np.log(np.log(1+df['price']))
@@ -357,35 +406,55 @@ def preprocess(file_path,test_size=0.2,random_state=100):
     df = df[(df['log_log_price']>l)&(df['log_log_price']<u)]
     
     # Processing categorical features with high cardinality through blended target encoding (mean and median)
-    df['log_price'] = np.log(1+df['price'])
-    kf_dict = {'host_id':(12,5),'neighbourhood_group':(5,150),'neighbourhood':(25,9)}
+    #df['log_price'] = np.log(1+df['price'])
+    kf_dict = {'host_id':(3,0.5),'neighbourhood_group':(5,150),'neighbourhood':(25,9)}
 
     # Split is done before target encoding to prevent from data leakage
     X_train, X_test = train_test_split(df, test_size=test_size, random_state=random_state)
-    
+    X_train, X_val = train_test_split(X_train, test_size=test_size, random_state=random_state)
+
     # mean and median target encoding
     for feature in ['host_id','neighbourhood','neighbourhood_group',['host_id','neighbourhood']]:
-        mean_target = target_encoding(X_train, feature, 'log_price', np.mean,kf_dict)
-        median_target = target_encoding(X_train, feature, 'log_price', np.median,kf_dict)
+        mean_target = target_encoding(X_train, feature, 'price', np.mean,kf_dict)
+        median_target = target_encoding(X_train, feature, 'price', np.median,kf_dict)
+        std_target = target_encoding(X_train, feature, 'price', np.std,kf_dict)
+        
         if type(feature) is not list:
             X_train['mean_target_'+ str(feature)] = X_train[feature].map(mean_target)
             X_train['median_target_'+ str(feature)] = X_train[feature].map(median_target)
-            X_test['mean_target_'+ str(feature)] = X_test[feature].map(mean_target).fillna(X_train['log_price'].mean())
-            X_test['median_target_'+ str(feature)] = X_test[feature].map(median_target).fillna(X_train['log_price'].median())
+            X_train['std_target_'+ str(feature)] = X_train[feature].map(std_target)
+            
+            X_val['mean_target_'+ str(feature)] = X_val[feature].map(mean_target).fillna(X_train['price'].mean())
+            X_val['median_target_'+ str(feature)] = X_val[feature].map(median_target).fillna(X_train['price'].median())
+            X_val['std_target_'+ str(feature)] = X_val[feature].map(std_target).fillna(X_train['price'].std(ddof=0))
+            
+            X_test['mean_target_'+ str(feature)] = X_test[feature].map(mean_target).fillna(X_train['price'].mean())
+            X_test['median_target_'+ str(feature)] = X_test[feature].map(median_target).fillna(X_train['price'].median())
+            X_test['std_target_'+ str(feature)] = X_test[feature].map(std_target).fillna(X_train['price'].std(ddof=0))
         else:
             X_train['mean_target_'+ '_'.join(feature)] = X_train[feature].apply(lambda x: mean_target.get(tuple(x)),axis = 1)
             X_train['median_target_'+ '_'.join(feature)] = X_train[feature].apply( lambda x: median_target.get(tuple(x)),axis = 1)
-            X_test['mean_target_'+ '_'.join(feature)] = X_test[feature].apply( lambda x: mean_target.get(tuple(x)),axis = 1).fillna(X_train['log_price'].mean())
-            X_test['median_target_'+ '_'.join(feature)] = X_test[feature].apply( lambda x: mean_target.get(tuple(x)),axis = 1).fillna(X_train['log_price'].median())
+            X_train['std_target_'+ '_'.join(feature)] = X_train[feature].apply( lambda x: std_target.get(tuple(x)),axis = 1)
+            
+            X_val['mean_target_'+ '_'.join(feature)] = X_val[feature].apply( lambda x: mean_target.get(tuple(x)),axis = 1).fillna(X_train['price'].mean())
+            X_val['median_target_'+ '_'.join(feature)] = X_val[feature].apply( lambda x: median_target.get(tuple(x)),axis = 1).fillna(X_train['price'].median())
+            X_val['std_target_'+ '_'.join(feature)] = X_val[feature].apply( lambda x: std_target.get(tuple(x)),axis = 1).fillna(X_train['price'].std(ddof=0))
+            
+            X_test['mean_target_'+ '_'.join(feature)] = X_test[feature].apply( lambda x: mean_target.get(tuple(x)),axis = 1).fillna(X_train['price'].mean())
+            X_test['median_target_'+ '_'.join(feature)] = X_test[feature].apply( lambda x: median_target.get(tuple(x)),axis = 1).fillna(X_train['price'].median())
+            X_test['std_target_'+ '_'.join(feature)] = X_test[feature].apply( lambda x: std_target.get(tuple(x)),axis = 1).fillna(X_train['price'].std(ddof=0))
+            
 
             
     #Split the target variable from the features
-    y_train = X_train['log_price']
-    X_train= X_train.drop(['id','name','host_id','host_name','neighbourhood_group', 'neighbourhood','last_review','price','log_price','log_log_price'], axis=1)
-    y_test = X_test['log_price']
-    X_test= X_test.drop(['id','name','host_id','host_name','neighbourhood_group', 'neighbourhood','last_review','price','log_price','log_log_price'], axis=1)
+    y_train = X_train['price']
+    X_train= X_train.drop(['id','name','host_id','host_name','ID','text','text_tsne_id','neighbourhood_group', 'neighbourhood','last_review','price','log_log_price'], axis=1)
+    y_val = X_val['price']
+    X_val= X_val.drop(['id','name','host_id','host_name','ID','text','text_tsne_id','neighbourhood_group', 'neighbourhood','last_review','price','log_log_price'], axis=1)
+    y_test = X_test['price']
+    X_test= X_test.drop(['id','name','host_id','host_name','ID','text','text_tsne_id','neighbourhood_group', 'neighbourhood','last_review','price','log_log_price'], axis=1)
 
-    return X_train, X_test, y_train, y_test
+    return X_train, X_test, X_val, y_train, y_test, y_val
 
 
 def scores(y_true,y_pred, plot=False):
@@ -410,7 +479,7 @@ def scores(y_true,y_pred, plot=False):
     # Plot the obtained errors and residuals if plot argument is set to True
     if plot:
         fig, axs = plt.subplots(ncols=2,figsize=(15,5))
-        x = np.arange(np.amin(y_true),np.amax(y_true))
+        x = [np.amin([y_true,y_pred]),np.amax([y_true,y_pred])]
         axs[0].scatter(y_pred,y_true,label="actual_vs_predicted")
         axs[0].plot(x,x,color='black',linestyle='dashed')
         axs[0].set_title("Actual vs. Predicted values")
@@ -445,4 +514,18 @@ def scores(y_true,y_pred, plot=False):
             }
 
     return scores
+
+def load_params(filename):
+    '''
+    load json files containing tuned models' parameters
+    
+    INPUT:
+        filename: name of the json file as a string 
+    
+    OUTPUT:
+        params:  dictionary containing the model's parameters
+    '''
+    with open('saved_models/'+filename, 'r') as f:
+        params = json.load(f)
+    return params
 

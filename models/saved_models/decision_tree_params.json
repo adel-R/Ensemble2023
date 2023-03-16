@@ -1,0 +1,1 @@
+{"ccp_alpha": 0.0, "criterion": "squared_error", "max_depth": 29, "max_features": 0.9959223533384182, "max_leaf_nodes": 30, "min_impurity_decrease": 0.1506578136299364, "min_samples_leaf": 14, "min_samples_split": 82, "min_weight_fraction_leaf": 0.0, "random_state": 631, "splitter": "best"}
