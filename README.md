@@ -8,6 +8,6 @@ The experimented models are tuned and saved in separate notebooks in the folder 
 
 All the notebooks rely on helper functions stored in the folder 'functions'.
 
-The decision tree algorithm coded from scratch and the tsne embedding performed on textual data have been stored in separate folders.
+The decision tree algorithm coded from scratch, the tsne embeddings performed on textual data and some draft notebooks have been stored in separate folders.
 
 
