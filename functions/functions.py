@@ -7,6 +7,8 @@ import spacy
 import nltk
 import re
 import json as json
+import time as time
+
 
 # modeling
 import xgboost as xg
@@ -20,8 +22,8 @@ from sklearn.ensemble import HistGradientBoostingRegressor
 from lightgbm import LGBMRegressor
 from sklearn.ensemble import VotingRegressor
 from sklearn.ensemble import StackingRegressor
-
 import lightgbm as lgb
+from sklearn.linear_model import LinearRegression            
 
 
 # Dimension reduction and clustering
@@ -61,6 +63,7 @@ __all__ = ["sns",
            "xg",
            "norm",
            "probplot",
+           "time",
            "mean_absolute_error",
            "mean_squared_error",
            "r2_score",
@@ -87,6 +90,7 @@ __all__ = ["sns",
            "LGBMRegressor",
            "VotingRegressor",
            "StackingRegressor",
+           "LinearRegression",
            "PCA",
            "KMeans",
            "TSNE",
@@ -101,14 +105,22 @@ __all__ = ["sns",
            "scores",
            "load_params",
            "file_paths",
+           "file_paths_global",
            "json",
-           "lgb"
+           "lgb",
+           "stacking_prediction",
+           "vote_prediction"
           ]
 
 file_paths = {'data':'../dataset/AB_NYC_2019.csv',
               'name_tsne': '../dataset/name_tsne.csv',
               'text_tsne': '../dataset/text_tsne.csv',
               'opendata' : '../dataset/airbnb-listings.csv'}
+
+file_paths_global = {'data':'dataset/AB_NYC_2019.csv',
+              'name_tsne': 'dataset/name_tsne.csv',
+              'text_tsne': 'dataset/text_tsne.csv',
+              'opendata' : 'dataset/airbnb-listings.csv'}
 
 ############# HELPER FUNCTIONS WE DEVELOPPED #############################
 # - get_cartesian: Converts latitude and longitude arrays into (x,y,z) coordinates
@@ -121,6 +133,8 @@ file_paths = {'data':'../dataset/AB_NYC_2019.csv',
 # - preprocess :  Preprocesses raw file to return a feature matrix X (dataframe) and target values y (dataframe)
 # - scores : Compute MAE, MSE, RMSE, R2 and MAPE scores and plot prediction errors
 # - load_params : load json files containing tuned models' parameters
+# - vote_prediction : Homemade voting algorithm that computes predictions and make a weighted sum or average
+# - stacking_prediction : Homemade stacking algorithm that computes predictions on k-fold to feed a final metamodel (linear regression)
 ##########################################################################
 
 
@@ -331,13 +345,13 @@ def preprocess(file_path,test_size=0.12,random_state=100, do_pca=False):
         y_test : Test Target values as Series
     '''
     #Load file    
-    df = pd.read_csv(file_paths['data'])
+    df = pd.read_csv(file_path['data'])
     
     #Import external features from external source : https://public.opendatasoft.com/explore/dataset/airbnb-listings/export/?disjunctive.host_verifications&disjunctive.amenities&disjunctive.features&refine.city=New+York
     opendata_str = ['Name','Summary','Space', 'Description', 'Experiences Offered', 'Neighborhood Overview','Notes', 'Transit', 'Access', 'Interaction','Amenities','Bed Type']
     opendata_float = ['Host Response Rate','Accommodates','Bathrooms','Bedrooms','Beds','Square Feet']
 
-    opendata = pd.read_csv(file_paths['opendata'],sep=';',usecols=['ID']+opendata_str+opendata_float)
+    opendata = pd.read_csv(file_path['opendata'],sep=';',usecols=['ID']+opendata_str+opendata_float)
     opendata['text'] = opendata[opendata_str].fillna('').sum(axis=1)
     opendata[opendata_float]= opendata[opendata_float].fillna(-1)
 
@@ -388,11 +402,11 @@ def preprocess(file_path,test_size=0.12,random_state=100, do_pca=False):
         df = pd.concat((df,pca_df),axis=1)
     
     # TSNE embeddings of the  encoded vectors of the name of Airbnb postings AND of the texts (Description,) from external feature 
-    name_tsne_df = pd.read_csv(file_paths['name_tsne'],names = ['name_encoding_tsne_1','name_encoding_tsne_2'],skiprows=1)
+    name_tsne_df = pd.read_csv(file_path['name_tsne'],names = ['name_encoding_tsne_1','name_encoding_tsne_2'],skiprows=1)
     name_tsne_df.index = list(df.index)
     df = pd.concat((df,name_tsne_df),axis=1)
     
-    text_tsne_df = pd.read_csv(file_paths['text_tsne'],names = ['text_tsne_id','text_encoding_tsne_1','text_encoding_tsne_2'],skiprows=1)
+    text_tsne_df = pd.read_csv(file_path['text_tsne'],names = ['text_tsne_id','text_encoding_tsne_1','text_encoding_tsne_2'],skiprows=1)
     text_tsne_df.index = list(df.index)
     df = pd.concat((df,text_tsne_df),axis=1)
     
@@ -525,7 +539,73 @@ def load_params(filename):
     OUTPUT:
         params:  dictionary containing the model's parameters
     '''
-    with open('saved_models/'+filename, 'r') as f:
+    with open(filename, 'r') as f:
         params = json.load(f)
     return params
+
+def vote_prediction(estimators,X_train_np,y_train_np,X_test_np, weights = None):
+    '''
+    Homemade voting algorithm that computes predictions and make a weighted sum or average
+    
+    INPUTS:
+        estimators : list of tuples containing a (string,model)
+        X_train_np : training feature matrix as numpy array
+        y_train_np : y labels for training
+        X_test_np  : test feature matrix as numpy array
+        
+    OUTPUTS:
+        y_pred : predicted labels
+    '''
+    y_pred = []
+    for est_name, estimator in estimators:
+        y_pred.append(np.maximum(0,estimator.fit(X_train_np, y_train_np).predict(X_test_np)))
+    
+    if weights == None:
+        y_pred = np.mean(y_pred, axis = 0)
+    else:
+        y_pred = np.sum([weights[i]*y_pred[i] for i in range(len(weights))],axis=0)
+    return y_pred
+
+
+
+def stacking_prediction(estimators,X_train_np,y_train_np,X_test_np, cv = 5):
+    '''
+    Homemade stacking algorithm - computes predictions on k-fold to feed a final metamodel (linear regression)
+    
+    INPUTS:
+        estimators : list of tuples containing a (string,model)
+        X_train_np : training feature matrix as numpy array
+        y_train_np : y labels for training
+        X_test_np  : test feature matrix as numpy array
+        
+    OUTPUTS:
+        y_pred : predicted labels
+    '''
+    
+    cv_idx = np.random.choice(np.arange(cv),size = X_train_np.shape[0])
+    n_estimators = len(estimators)
+    
+    X_meta = np.zeros((X_train_np.shape[0],n_estimators))
+    for i in range(cv):
+        X_cv_train = X_train_np[cv_idx!=i,:]
+        y_cv_train = y_train_np[cv_idx!=i]
+        X_cv_val =  X_train_np[cv_idx==i,:]
+        
+        for j in range(n_estimators):
+                X_meta[cv_idx==i,j] = np.maximum(0,estimators[j][1].fit(X_cv_train, y_cv_train).predict(X_cv_val))
+    
+    X_meta = np.concatenate((X_train_np,X_meta),axis=1)
+    
+    X_meta_test = np.zeros((X_test_np.shape[0],n_estimators))
+    for j in range(n_estimators):
+        X_meta_test[:,j] = np.maximum(0,estimators[j][1].fit(X_train_np, y_train_np).predict(X_test_np))
+
+        
+    X_meta_test = np.concatenate((X_test_np,X_meta_test),axis=1)
+
+    
+    y_pred = LinearRegression().fit(X_meta,y_train_np).predict(X_meta_test)
+    
+    return y_pred
+    
 
