@@ -23,7 +23,8 @@ from lightgbm import LGBMRegressor
 from sklearn.ensemble import VotingRegressor
 from sklearn.ensemble import StackingRegressor
 import lightgbm as lgb
-from sklearn.linear_model import LinearRegression            
+from sklearn.linear_model import LinearRegression
+from catboost import CatBoostRegressor
 
 
 # Dimension reduction and clustering
@@ -91,6 +92,7 @@ __all__ = ["sns",
            "VotingRegressor",
            "StackingRegressor",
            "LinearRegression",
+           "CatBoostRegressor",
            "PCA",
            "KMeans",
            "TSNE",
