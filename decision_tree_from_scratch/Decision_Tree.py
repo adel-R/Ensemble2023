@@ -31,7 +31,7 @@ class Node:
         return self.value is not None
 
 
-class DecisionTreeClassifier:
+class HomemadeDecisionTreeClassifier:
     '''
     Decision Tree classifier class based on the CART algorithm using Information Gain to calculate the splits
     '''
@@ -190,7 +190,7 @@ class DecisionTreeClassifier:
         except Exception as e:
             print(e)
 
-class DecisionTreeRegressor:
+class HomemadeDecisionTreeRegressor:
     def __init__(self, max_depth=5, min_samples_split=2):
         self.max_depth = max_depth
         self.min_samples_split = min_samples_split
@@ -268,5 +268,42 @@ class DecisionTreeRegressor:
         for x in X:
             y_pred.append(self._predict_sample(self.tree, x))
         return np.array(y_pred)
+    
+    def load_tree(self, loaded_tree):
+        self.tree = loaded_tree
+
+    def visualize_tree(self, feature_names=None):
+        dot = Digraph()
+        
+        # A adapter
+        # def _add_nodes(node, parent_node=None):
+        #     if node is None:
+        #         return
+        #     if node.is_leaf_node():
+        #         # Add leaf node
+        #         label = f'class: {node.value}'
+        #         dot.node(str(node), label=label, shape='oval')
+        #         dot.edge(str(parent_node), str(node), label='')
+        #         if parent_node is not None:
+        #             dot.edge(str(parent_node), str(node), label='')
+
+        #     else:
+        #         # Add decision node
+        #         feature_name = ''
+        #         if feature_names is not None:
+        #             feature_name = feature_names[node.feature]
+        #         label = f'{feature_name} <= {node.threshold:.2f}'
+        #         dot.node(str(node), label=label, shape='box')
+        #         # Recursively add child nodes
+        #         if parent_node is not None:
+        #             dot.edge(str(parent_node), str(node), label='')
+        #     _add_nodes(node.LeftChildNode, node)
+        #     _add_nodes(node.RightChildNode, node)
+
+        # _add_nodes(self.tree)
+        # try:
+        #     dot.render('tree', format='png', view=True)
+        # except Exception as e:
+        #     print(e)
 
 
