@@ -49,6 +49,8 @@ import seaborn as sns
 from scipy.stats import norm
 from scipy.stats import probplot
 from PIL import Image
+from graphviz import Digraph
+
 
 
 # Load spaCy model  for string encoding
@@ -66,6 +68,7 @@ __all__ = ["sns",
            "norm",
            "probplot",
            "Image",
+           "Digraph",
            "time",
            "mean_absolute_error",
            "mean_squared_error",
