@@ -13,6 +13,11 @@ from sklearn.datasets import fetch_california_housing
 from sklearn.datasets import load_digits
 from sklearn.datasets import load_iris
 
+### Run the present py file to test the implemented decision trees on 4 datasets
+### This will print the performance and runtime.
+### Our algorithms are compared with sklearn's implementation and are more performant but slower.
+### We also included our algorithm in part A (Airbnb dataset). See files  'global_results.ipynb' and 'models/decision_tree_from_scratch.ipynb'
+### The trees are also saved in png format for better reading experience.
 
 ###################################################### Classification Task ###############################################################
 def run_classification(data):
