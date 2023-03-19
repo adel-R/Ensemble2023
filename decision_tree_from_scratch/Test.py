@@ -70,6 +70,8 @@ print(f"The MSE for the custom DT Regressor model is {mse} and the time taken is
 r2 = r2_score(y_test, y_pred)
 print(f"The R2_Score for the custom DT Regressor model is {r2} and the time taken is {end-start}")
 
+dt.visualize_tree_reg(feature_names=data.feature_names)
+
 #Check this against SKLearn DT Regressor
 start = time.time()
 clf = tree.DecisionTreeRegressor(max_depth=3, min_samples_split=12,random_state=40)
