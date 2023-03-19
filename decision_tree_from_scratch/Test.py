@@ -2,10 +2,10 @@
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
 import numpy as np
-from Decision_Tree import DecisionTreeClassifier
+from Decision_Tree import HomemadeDecisionTreeClassifier
 from sklearn.datasets import load_diabetes
 from sklearn.metrics import mean_squared_error
-from Decision_Tree import DecisionTreeRegressor
+from Decision_Tree import HomemadeDecisionTreeRegressor
 from sklearn.metrics import r2_score
 from sklearn import tree
 import time
@@ -23,7 +23,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 # custom decision tree classifier performance
 
 start = time.time()
-clf = DecisionTreeClassifier(max_depth=6)
+clf = HomemadeDecisionTreeClassifier(max_depth=6)
 clf.fit(X_train, y_train)
 predictions = clf.predict(X_test)
 end = time.time()
@@ -56,7 +56,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_
 
 # Train a decision tree regressor on the training set & Evaluate the model on the testing set
 start = time.time()
-dt = DecisionTreeRegressor(max_depth=3, min_samples_split=12)
+dt = HomemadeDecisionTreeRegressor(max_depth=3, min_samples_split=12)
 dt.fit(X_train, y_train)
 y_pred = dt.predict(X_test)
 end = time.time()
@@ -72,7 +72,7 @@ print(f"The R2_Score for the custom DT Regressor model is {r2} and the time take
 
 #Check this against SKLearn DT Regressor
 start = time.time()
-clf = tree.DecisionTreeRegressor(random_state=40)
+clf = tree.DecisionTreeRegressor(max_depth=3, min_samples_split=12,random_state=40)
 clf.fit(X_train, y_train)
 y_pred = clf.predict(X_test)
 end = time.time()
