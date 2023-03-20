@@ -11,7 +11,7 @@
 </p>
 
 <h1 align="center">Tous Ensemble - Ensemble Learning project</h3>
-  <p align="center">
+  <p>
     This project is the final assignment of the Ensemble Learning class of 2023 at CentraleSupélec as part of the Master in Data Sciences & Business Analytics. It consists in 2 parts:
   <ul>
     <li>Predict Airbnb Prices in New York City using several ensemble methods seen in class.</li>
