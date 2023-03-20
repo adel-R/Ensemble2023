@@ -4,21 +4,11 @@
 [![Contributors][contributors-shield]][contributors-url]
 [![MIT License][license-shield]][license_url]
 
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <a href="https://github.com/github_username/repo_name">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>
-
-<h3 align="center">Tous Ensemble</h3>
-
+<h3 align="center">Tous Ensemble - Ensemble Learning project</h3>
   <p align="center">
     This project is the final assignment of the Ensemble Learning class of 2023 at CentraleSupélec as part of the Master in Data Sciences & Business Analytics. It consists in 2 parts:
     * Predict Airbnb Prices in New York City using several ensemble methods seen in class.
     * Implement a Decision Tree from scratch on Python allowing to deal with both a regression task and a classification task.
-    <br />
-    <a href="https://github.com/github_username/repo_name"><strong>Explore the docs »</strong></a>
   </p>
 </div>
 
@@ -44,8 +34,8 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Airbnb Prices in New York City prediction][/img/Airbnb_NYC-prices.jfif]](https://github.com/adel-R/Ensemble2023/blob/main/global_results.ipynb)
-[![Decision Tree from scratch on Python][/img/decision_tree_from_scratch-viz.jfif]](https://github.com/adel-R/Ensemble2023/blob/main/decision_tree_from_scratch/Test_of_homemade_decision_tree.ipynb)
+[![Airbnb Prices in New York City prediction][img/Airbnb_NYC-prices.jfif]](https://github.com/adel-R/Ensemble2023/blob/main/global_results.ipynb)
+[![Decision Tree from scratch on Python][img/decision_tree_from_scratch-viz.jfif]](https://github.com/adel-R/Ensemble2023/blob/main/decision_tree_from_scratch/Test_of_homemade_decision_tree.ipynb)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -104,9 +94,6 @@ run_classification(load_digits())
 ```python
 run_regression(load_diabetes())
 ```
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
