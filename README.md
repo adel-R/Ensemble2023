@@ -263,9 +263,9 @@ The decision tree algorithm coded from scratch, the tsne embeddings performed on
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* [A preprocessing scheme for high-cardinality categorical attributes in classification and prediction problems](https://dl.acm.org/doi/pdf/10.1145/507533.507538?casa_token=Gp2uWLUNQ1wAAAAA:jH5pYvUfgdf7Il88OnqvggcUs2lhZUB0rsfKr73ycX-HN8iKpzMxtJqOskHJk5e2IAPAkDT5tq4QJvY)
+* [Daniele Micci-Barreca, A preprocessing scheme for high-cardinality categorical attributes in classification and prediction problems](https://dl.acm.org/doi/pdf/10.1145/507533.507538?casa_token=Gp2uWLUNQ1wAAAAA:jH5pYvUfgdf7Il88OnqvggcUs2lhZUB0rsfKr73ycX-HN8iKpzMxtJqOskHJk5e2IAPAkDT5tq4QJvY)
 * [Breiman, L. Random Forests. Machine Learning 45, 5–32 (2001)](https://doi.org/10.1023/A:1010933404324)
-* [XGBoost: A Scalable Tree Boosting System](https://arxiv.org/abs/1603.02754)
+* [Tianqi Chen, Carlos Guestrin, XGBoost: A Scalable Tree Boosting System](https://arxiv.org/abs/1603.02754)
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
