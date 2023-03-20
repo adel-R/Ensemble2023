@@ -55,13 +55,13 @@
 
 ### Built With
 
-* <a href="https://pandas.pydata.org/docs/"><img src="https://pandas.pydata.org/docs/_static/pandas.svg" alt="Pandas" width="80" height="30" /></a>
-* <a href="https://numpy.org/doc/"><img src="https://numpy.org/doc/_static/numpylogo.svg" alt="Numpy" width="80" height="30" /></a>
-* <a href="https://scikit-learn.org/stable/"><img src="https://scikit-learn.org/stable/_static/scikit-learn-logo-small.png" alt="Scikit-learn" width="80" height="30" /></a>
-* <a href="https://spacy.io/"><img src="https://raw.githubusercontent.com/github/explore/8cf1837393d83900e767cc895dcc814d053e2ffe/topics/spacy/spacy.png" alt="Spacy" width="80" height="30" /></a>
-* <a href="https://matplotlib.org/"><img src="https://matplotlib.org/_static/logo2_compressed.svg" alt="Matplotlib" width="80" height="30" /></a>
-* <a href="https://seaborn.pydata.org/index.html"><img src="https://seaborn.pydata.org/_static/logo-wide-lightbg.svg" alt="Seaborn" width="80" height="30" /></a>
-* <a href="https://graphviz.org/"><img src="https://upload.wikimedia.org/wikipedia/en/4/48/GraphvizLogo.png" alt="Graphviz" width="80" height="30" /></a>
+* <a href="https://pandas.pydata.org/docs/"><img src="https://pandas.pydata.org/docs/_static/pandas.svg" alt="Pandas" width="100" height="40" /></a>
+* <a href="https://numpy.org/doc/"><img src="https://numpy.org/doc/_static/numpylogo.svg" alt="Numpy" width="100" height="40" /></a>
+* <a href="https://scikit-learn.org/stable/"><img src="https://scikit-learn.org/stable/_static/scikit-learn-logo-small.png" alt="Scikit-learn" width="100" height="40" /></a>
+* <a href="https://spacy.io/"><img src="https://raw.githubusercontent.com/github/explore/8cf1837393d83900e767cc895dcc814d053e2ffe/topics/spacy/spacy.png" alt="Spacy" width="100" height="40" /></a>
+* <a href="https://matplotlib.org/"><img src="https://matplotlib.org/_static/logo2_compressed.svg" alt="Matplotlib" width="100" height="40" /></a>
+* <a href="https://seaborn.pydata.org/index.html"><img src="https://seaborn.pydata.org/_static/logo-wide-lightbg.svg" alt="Seaborn" width="100" height="40" /></a>
+* <a href="https://graphviz.org/"><img src="https://upload.wikimedia.org/wikipedia/en/4/48/GraphvizLogo.png" alt="Graphviz" width="100" height="40" /></a>
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
