@@ -1,8 +1,14 @@
 <a name="readme-top"></a>
 
 <!-- PROJECT SHIELDS -->
-* [![Contributors][contributors-shield]][contributors-url]
-* [![MIT License][license-shield]][license_url]
+<p>
+  <a href="https://github.com/adel-R/Ensemble2023/graphs/contributors">
+    <img src="https://img.shields.io/badge/Contributors-5-brightgreen?style=plastic" alt="contributors" />
+  </a>
+  <a href="[https://github.com/Louis3797/awesome-readme-template/blob/master/LICENSE](https://github.com/adel-R/Ensemble2023/blob/main/LICENSE)">
+    <img src="https://img.shields.io/badge/License-MIT-brightgreen?style=plastic" alt="license" />
+  </a>
+</p>
 
 <h3 align="center">Tous Ensemble - Ensemble Learning project</h3>
   <p align="center">
@@ -43,13 +49,14 @@
 
 ### Built With
 
-* [![Pandas][Pandas]][Pandas_url]
-* [![Numpy][Numpy]][Numpy_url]
-* [![Scikit-learn][Scikit-learn]][Scikit-learn_url]
-* [![Spacy][Spacy]][Spacy_url]
-* [![Matplotlib][Matplotlib]][Matplotlib_url]
-* [![Seaborn][Seaborn]][Seaborn_url]
-* [![Graphviz][Graphviz]][Graphviz_url]
+* <a href="https://pandas.pydata.org/docs/"><img src="https://pandas.pydata.org/docs/_static/pandas.svg" alt="Pandas" width="80" height="30" /></a>
+* <a href="https://numpy.org/doc/"><img src="https://numpy.org/doc/_static/numpylogo.svg" alt="Numpy" width="80" height="30" /></a>
+* <a href="https://scikit-learn.org/stable/"><img src="https://scikit-learn.org/stable/_static/scikit-learn-logo-small.png" alt="Scikit-learn" width="80" height="30" /></a>
+* <a href="https://spacy.io/"><img src="https://raw.githubusercontent.com/github/explore/8cf1837393d83900e767cc895dcc814d053e2ffe/topics/spacy/spacy.png" alt="Spacy" width="80" height="30" /></a>
+* <a href="https://matplotlib.org/"><img src="https://matplotlib.org/_static/logo2_compressed.svg" alt="Matplotlib" width="80" height="30" /></a>
+* <a href="https://seaborn.pydata.org/index.html"><img src="https://seaborn.pydata.org/_static/logo-wide-lightbg.svg" alt="Seaborn" width="80" height="30" /></a>
+* <a href="https://graphviz.org/"><img src="https://upload.wikimedia.org/wikipedia/en/4/48/GraphvizLogo.png" alt="Graphviz" width="80" height="30" /></a>
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -236,14 +243,23 @@ The decision tree algorithm coded from scratch, the tsne embeddings performed on
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
+<!-- CONTACT -->
+## Contact
 
 * [Adel Remadi](https://github.com/adel-R)
 * [Amine Zaamoun](https://github.com/Zaamine)
 * [Victor Maillot](https://github.com/v-maillot)
 * [Vanille Bourre](https://github.com/VanilleB16)
 * [Mélodie Mirval](https://github.com/melomvl)
+
+<!-- ACKNOWLEDGMENTS -->
+## Acknowledgments
+
+* [A preprocessing scheme for high-cardinality categorical attributes in classification and prediction problems](https://dl.acm.org/doi/pdf/10.1145/507533.507538?casa_token=Gp2uWLUNQ1wAAAAA:jH5pYvUfgdf7Il88OnqvggcUs2lhZUB0rsfKr73ycX-HN8iKpzMxtJqOskHJk5e2IAPAkDT5tq4QJvY)
+* []()
+* []()
+* []()
+* []()
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
