@@ -1,11 +1,11 @@
 <a name="readme-top"></a>
 
 <!-- PROJECT SHIELDS -->
-<p>
+<p align="center">
   <a href="https://github.com/adel-R/Ensemble2023/graphs/contributors">
     <img src="https://img.shields.io/badge/Contributors-5-brightgreen?style=plastic" alt="contributors" />
   </a>
-  <a href="[https://github.com/Louis3797/awesome-readme-template/blob/master/LICENSE](https://github.com/adel-R/Ensemble2023/blob/main/LICENSE)">
+  <a href="(https://github.com/adel-R/Ensemble2023/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/License-MIT-brightgreen?style=plastic" alt="license" />
   </a>
 </p>
