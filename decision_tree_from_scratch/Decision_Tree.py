@@ -269,13 +269,20 @@ class HomemadeDecisionTreeRegressor:
             y_pred.append(self._predict_sample(self.tree, x))
         return np.array(y_pred)
     
+    def load_tree(self,loaded_tree):
+        self.tree = loaded_tree
+
+
     def visualize_tree_reg(self, feature_names=None):
         dot = Digraph()
 
         def add_nodes(tree, parent_node=None):
-            print('tree', tree)
             if isinstance(tree, float):
                 node_label = f"Value: {tree:.2f}"
+                dot.node(str(id(tree)), node_label, shape='oval')
+                dot.edge(str(id(parent_node)), str(id(tree)), label='')
+                if parent_node is not None:
+                    dot.edge(str(id(parent_node)), str(id(tree)), label='')
             else:
                 feature = tree["split_feature"]
                 if feature_names is not None:
