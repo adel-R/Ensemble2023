@@ -276,6 +276,7 @@ class HomemadeDecisionTreeRegressor:
         dot = Digraph()
 
         def add_nodes(tree, parent_node=None):
+            print('tree', tree)
             if isinstance(tree, float):
                 node_label = f"Value: {tree:.2f}"
             else:
@@ -288,7 +289,8 @@ class HomemadeDecisionTreeRegressor:
 
                 left_node = tree["left"]
                 right_node = tree["right"]
-                dot.node(str(id(tree)), node_label)
+
+                dot.node(str(id(tree)), node_label, shape='box')
                 if parent_node is not None:
                     dot.edge(str(id(parent_node)), str(id(tree)))
                 add_nodes(left_node, tree)
