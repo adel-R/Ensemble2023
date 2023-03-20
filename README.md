@@ -44,10 +44,10 @@
 
 <p align="center">
   <a href="https://github.com/adel-R/Ensemble2023/blob/main/global_results.ipynb">
-    <img src="img/Airbnb_NYC-prices.jfif" alt="Airbnb Prices in New York City prediction" width="200" />
+    <img src="img/Airbnb_NYC-prices.jfif" alt="Airbnb Prices in New York City prediction" width="499" />
   </a>
   <a href="https://github.com/adel-R/Ensemble2023/blob/main/decision_tree_from_scratch/Test_of_homemade_decision_tree.ipynb">
-    <img src="img/decision_tree_from_scratch-viz.jfif" alt="Decision Tree from scratch on Python" width="200" />
+    <img src="img/decision_tree_from_scratch-viz.jfif" alt="Decision Tree from scratch on Python" width="499" />
   </a>
 </p>
 
