@@ -1,8 +1,8 @@
 <a name="readme-top"></a>
 
 <!-- PROJECT SHIELDS -->
-[![Contributors][contributors-shield]][contributors-url]
-[![MIT License][license-shield]][license_url]
+* [![Contributors][contributors-shield]][contributors-url]
+* [![MIT License][license-shield]][license_url]
 
 <h3 align="center">Tous Ensemble - Ensemble Learning project</h3>
   <p align="center">
@@ -76,15 +76,12 @@
 ## Usage
 
 ### Decision Tree from scratch
+
+#### Airbnb Price prediction
 ```python
 Final_Results = pd.DataFrame(all_scores)
 Final_Results = Final_Results[['Model', 'R2', 'MAE', 'MSE', 'RMSE', 'MAPE', 'error_ratio_rmse', 'error_ratio_mae']] 
 Final_Results.sort_values('R2', ascending = False)
-```
-
-#### Airbnb Price prediction
-```python
-run_classification(load_digits())
 ```
 
 #### Classification task
@@ -98,7 +95,6 @@ run_regression(load_diabetes())
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 <!-- REPOSITORY TREE STRUCTURE -->
 ## Repository tree structure
