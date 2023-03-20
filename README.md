@@ -51,6 +51,8 @@
   </a>
 </p>
 
+Airbnb has become a popular alternative to traditional hotels, allowing individuals to list their properties as rental places. However, determining the optimal price for an Airbnb listing can be challenging for hosts, especially in large cities like New York, where the number of listings is substantial. To help hosts set competitive prices and improve their occupancy rates, accurate prediction of Airbnb prices is crucial. In this project, we aimed to predict the price of Airbnb listings in New York City using Ensemble Learning techniques on a Kaggle dataset. Our goal was to train and tune the hyperparameters of 14 methods (such as Decision trees, Random Forest or XGBoost, etc.) and combine their predictions using Stacking and Voting algorithms, two popular Ensemble techniques, that we developed ourselves and which performed better in comparison to Scikit-Learn’s implementation. We have evaluated the performance of our Ensemble models using several metrics such as MAE (Mean Absolute Error), RMSE (Root Mean Squared Er- decision tree algorithms that were compared with Scikit- Learn’s implementation on the task of predicting prices of Airbnb listings as well as on 4 other datasets. The results of this project confirmed that Stacking, Voting and Boosting are very interesting ensemble techniques that, if associated with proper feature engineering, could allow to provide valuable insights to Airbnb hosts in New York City for better decision making.
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Built With
@@ -262,10 +264,6 @@ The decision tree algorithm coded from scratch, the tsne embeddings performed on
 ## Acknowledgments
 
 * [A preprocessing scheme for high-cardinality categorical attributes in classification and prediction problems](https://dl.acm.org/doi/pdf/10.1145/507533.507538?casa_token=Gp2uWLUNQ1wAAAAA:jH5pYvUfgdf7Il88OnqvggcUs2lhZUB0rsfKr73ycX-HN8iKpzMxtJqOskHJk5e2IAPAkDT5tq4QJvY)
-* []()
-* []()
-* []()
-* []()
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
