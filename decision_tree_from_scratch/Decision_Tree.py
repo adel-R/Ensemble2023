@@ -269,9 +269,6 @@ class HomemadeDecisionTreeRegressor:
             y_pred.append(self._predict_sample(self.tree, x))
         return np.array(y_pred)
     
-    def load_tree(self, loaded_tree):
-        self.tree = loaded_tree
-
     def visualize_tree_reg(self, feature_names=None):
         dot = Digraph()
 
