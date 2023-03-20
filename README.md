@@ -266,23 +266,3 @@ The decision tree algorithm coded from scratch, the tsne embeddings performed on
 * [A preprocessing scheme for high-cardinality categorical attributes in classification and prediction problems](https://dl.acm.org/doi/pdf/10.1145/507533.507538?casa_token=Gp2uWLUNQ1wAAAAA:jH5pYvUfgdf7Il88OnqvggcUs2lhZUB0rsfKr73ycX-HN8iKpzMxtJqOskHJk5e2IAPAkDT5tq4QJvY)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- MARKDOWN LINKS & IMAGES -->
-[contributors-shield]: https://img.shields.io/badge/Contributors-5-brightgreen?style=plastic
-[contributors_url]: https://github.com/adel-R/Ensemble2023/graphs/contributors
-[license-shield]: https://img.shields.io/badge/License-MIT-brightgreen?style=plastic
-[license_url]: https://github.com/adel-R/Ensemble2023/blob/main/LICENSE
-[Pandas_url]: https://pandas.pydata.org/docs/
-[Numpy_url]: https://numpy.org/doc/
-[Scikit-learn_url]: https://scikit-learn.org/stable/
-[Spacy_url]: https://spacy.io/
-[Matplotlib_url]: https://matplotlib.org/
-[Seaborn_url]: https://seaborn.pydata.org/index.html
-[Graphviz_url]: https://graphviz.org/
-[Pandas]: https://pandas.pydata.org/docs/_static/pandas.svg
-[Numpy]: https://numpy.org/doc/_static/numpylogo.svg
-[Scikit-learn]: https://scikit-learn.org/stable/_static/scikit-learn-logo-small.png
-[Spacy]: https://raw.githubusercontent.com/github/explore/8cf1837393d83900e767cc895dcc814d053e2ffe/topics/spacy/spacy.png
-[Matplotlib]: https://matplotlib.org/
-[Seaborn]: https://seaborn.pydata.org/_static/logo-wide-lightbg.svg
-[Graphviz]: https://upload.wikimedia.org/wikipedia/en/4/48/GraphvizLogo.png
