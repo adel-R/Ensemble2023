@@ -563,14 +563,21 @@ def vote_prediction(estimators,X_train_np,y_train_np,X_test_np, weights = None):
     OUTPUTS:
         y_pred : predicted labels
     '''
+
+    # Initiate prediction vector
     y_pred = []
+
+    # For all estimators append the predictions
     for est_name, estimator in estimators:
         y_pred.append(np.maximum(0,estimator.fit(X_train_np, y_train_np).predict(X_test_np)))
     
     if weights == None:
+        # If weights are NOT specified, compute an average 
         y_pred = np.mean(y_pred, axis = 0)
     else:
+        # If weights are specified, compute a weighted sum
         y_pred = np.sum([weights[i]*y_pred[i] for i in range(len(weights))],axis=0)
+
     return y_pred
 
 
@@ -588,11 +595,16 @@ def stacking_prediction(estimators,X_train_np,y_train_np,X_test_np, cv = 5):
     OUTPUTS:
         y_pred : predicted labels
     '''
-    
+    # Affect Cross validation indexes for each fold
     cv_idx = np.random.choice(np.arange(cv),size = X_train_np.shape[0])
+
+    # Number of estimators
     n_estimators = len(estimators)
     
+    # Initiate the meta feature matrix
     X_meta = np.zeros((X_train_np.shape[0],n_estimators))
+
+    # For each fold compute predictions and fill in the meta feature matrix
     for i in range(cv):
         X_cv_train = X_train_np[cv_idx!=i,:]
         y_cv_train = y_train_np[cv_idx!=i]
@@ -601,16 +613,17 @@ def stacking_prediction(estimators,X_train_np,y_train_np,X_test_np, cv = 5):
         for j in range(n_estimators):
                 X_meta[cv_idx==i,j] = np.maximum(0,estimators[j][1].fit(X_cv_train, y_cv_train).predict(X_cv_val))
     
+    # Concatenate the meta feature matrix with the Initial feature matrix
     X_meta = np.concatenate((X_train_np,X_meta),axis=1)
     
+    # Create the test meta feature Matrix (using whole train set) and concatenate it 
     X_meta_test = np.zeros((X_test_np.shape[0],n_estimators))
     for j in range(n_estimators):
         X_meta_test[:,j] = np.maximum(0,estimators[j][1].fit(X_train_np, y_train_np).predict(X_test_np))
-
-        
+    
     X_meta_test = np.concatenate((X_test_np,X_meta_test),axis=1)
 
-    
+    # Make a Final prediction using a final estimator (Linear Regression here)
     y_pred = LinearRegression().fit(X_meta,y_train_np).predict(X_meta_test)
     
     return y_pred

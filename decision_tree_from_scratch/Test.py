@@ -60,7 +60,7 @@ print('--- Iris Dataset ---')
 run_classification(load_iris())
 
 ###################################################### Regression Task ###############################################################
-def run_classification(data_reg):
+def run_regression(data_reg):
     X, y = data_reg.data, data_reg.target
 
     # Split the data into training and testing sets
@@ -98,6 +98,6 @@ def run_classification(data_reg):
     print(f"The R2_Score for the Sklearn DT model is {r2} and the time taken is {end-start}")
 
 print('--- Diabetes Dataset ---')
-run_classification(load_diabetes())
+run_regression(load_diabetes())
 print('--- California Housing Dataset ---')
-run_classification(fetch_california_housing())
+run_regression(fetch_california_housing())
